@@ -10,7 +10,9 @@ import java.lang.Thread;
 @Path("smart")
 public class SmartService {
 	
-	public static Thread mThread = new Thread(new SmartGestion());
+	public static SmartGestion smartGestion = new SmartGestion();
+	
+	public static Thread mThread = new Thread(smartGestion);
 
 	@GET
 	@Path("start")
@@ -18,8 +20,8 @@ public class SmartService {
 	public int start_thread() {
 		int result;
 		try {
-			if(mThread.isInterrupted()) {
-				mThread.interrupt();
+			if(mThread.isAlive()) {
+				smartGestion.resume();
 			}
 			else{
 				mThread.start();
@@ -38,7 +40,7 @@ public class SmartService {
 	public int stop_thread() {
 		int result;
 		try {
-			mThread.wait();
+			smartGestion.pause();
 			result=0;
 		}catch (Exception e) {
 			e.printStackTrace();

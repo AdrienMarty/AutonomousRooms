@@ -6,19 +6,18 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 @Path("lights")
-
 public class LightsService {
 	@GET
 	@Path("on")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String openDoors() {
+	public String turnOn() {
 		return "Lights on.";
 	}
 	
 	@GET
 	@Path("off")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String closeDoors() {
+	public String turnOff() {
 		return "Lights off.";
 	}
 }
