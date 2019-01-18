@@ -39,5 +39,12 @@ public class ApplicationState {
 	}
 	
 	
+	@GET 
+	@Path("/path")
+	public void notifyStateChanged() {
+		
+	}
+	
+	
 	
 }
