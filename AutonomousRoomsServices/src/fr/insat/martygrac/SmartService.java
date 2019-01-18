@@ -15,6 +15,14 @@ public class SmartService {
 	public static Thread mThread = new Thread(smartGestion);
 
 	@GET
+	@Path("test")
+	public void test() {
+		System.out.println("Temp ext = "+Temp.Temperature_ext);
+		System.out.println("Temp int = "+Temp.Temperature_int);
+		System.out.println("Someone here = "+Temp.isSomeoneHere);
+	}
+	
+	@GET
 	@Path("start")
 	@Produces(MediaType.TEXT_PLAIN)
 	public int start_thread() {

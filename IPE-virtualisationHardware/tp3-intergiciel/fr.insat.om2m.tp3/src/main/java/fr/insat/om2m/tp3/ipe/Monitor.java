@@ -2,6 +2,7 @@ package fr.insat.om2m.tp3.ipe;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.philips.lighting.model.PHLight;
@@ -37,12 +38,14 @@ public class Monitor {
 	private static boolean connected = false;
 
 	public final static String APPID = "HUE-app";
-	public static final String url = "http://192.168.1.15:8080/~/in-cse/";
+	public static final String url = "http://mac_maxime:8080/~/in-cse/";
 	private static final String originator_admin = "admin:admin";
 
 	/** Point of access of the http server part */
-	public static final String SERVER_POA = "http://192.168.1.142:1400/monitor";
+	//public static final String SERVER_POA = "http://mac_maxime:1400/monitor";
+	public static final String SERVER_POA = "http://192.168.43.214:8080/AutonomousRoomsServices";
 	private static final String ORIGINATOR = "admin:admin";
+
 	private ClientInterface client = new Client();
 	private MapperInterface mapper = new Mapper();
 
@@ -75,7 +78,7 @@ public class Monitor {
 	 * @param cnt
 	 *
 	 */
-	public void createResources(AE application_entity, ArrayList<Container> cnt) {
+	public void createResources(ArrayList<AE> application_entitys, ArrayList<Container> cnts, HashMap<String, Subscription> subscriptions) {
 
 		/*AE lamp_ae = new AE();
 		lamp_ae.setAppID(APPID);
@@ -91,16 +94,24 @@ public class Monitor {
 		ContentInstance description_instance = new ContentInstance();*/
 		Mapper mapper = new Mapper();
 		try{
-			Response mResponse = client.create(url,mapper.marshal(application_entity), originator_admin,"2");
-			System.out.println(mResponse.toString());
-
-
-
-			for (Container cont : cnt){
-				mResponse = client.create(url+CSE_NAME+ "/Light" + "/DESCRIPTOR",
-						mapper.marshal(cont), originator_admin,"4");
+			for (AE application_entity : application_entitys){
+				Response mResponse = client.create(url,mapper.marshal(application_entity), originator_admin,"2");
 				System.out.println(mResponse.toString());
+				for (Container cont : cnts){
+					//System.out.println(mapper.marshal(cont));
+				/*mResponse = client.create(url+CSE_NAME+"/"+application_entity.getAppName() + "/",
+						mapper.marshal(cont), originator_admin,"3");*/
+					mResponse = client.create(url+CSE_NAME+"/"+application_entity.getName(),
+							mapper.marshal(cont), originator_admin,"3");
+					System.out.println(mResponse.toString());
+				}
+				mResponse = client.create(url + CSE_NAME+ "/" +application_entity.getName() + "/DATA",
+						mapper.marshal(subscriptions.get(application_entity.getName())), originator_admin,"23");
+				System.out.println(mResponse.toString());
+
 			}
+
+
 			/*mResponse = client.create(url+CSE_NAME+ "/Light"+l.getIdentifier() + "/DESCRIPTOR",
 					mapper.marshal(description_instance), originator_admin,"4");
 			System.out.println(mResponse.toString());
@@ -114,8 +125,6 @@ public class Monitor {
 			sub.setName("SUB");
 			mResponse = client.create(url+CSE_NAME+ "/Light"+l.getIdentifier() + "/DATA",
 					mapper.marshal(sub), originator_admin,"23");*/
-
-			System.out.println(mResponse.toString());
 		}catch (Exception e){
 			e.printStackTrace();
 		}

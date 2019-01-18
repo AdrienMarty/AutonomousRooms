@@ -193,6 +193,13 @@ public class Notification {
 		this.subscriptionReference = value;
 	}
 
+	@Override
+	public String toString() {
+		return "Notification [notificationEvent=" + notificationEvent + ", verificationRequest=" + verificationRequest
+				+ ", subscriptionDeletion=" + subscriptionDeletion + ", subscriptionReference=" + subscriptionReference
+				+ ", creator=" + creator + ", notificationForwardingURI=" + notificationForwardingURI + "]";
+	}
+
 	/**
 	 * Gets the value of the creator property.
 	 * 
@@ -273,10 +280,10 @@ public class Notification {
 	@XmlAccessorType(XmlAccessType.FIELD)
 	@XmlType(name = "", propOrder = { "representation", "resourceStatus",
 			"operationMonitor" })
-	public static class NotificationEvent {
+	public static class NotificationEvent<Type> {
 
 		@XmlElement(name = ShortName.REPRESENTATION)
-		protected Object representation;
+		protected Type representation;
 		@XmlElement(name = ShortName.RESOURCE_STATUS)
 		protected BigInteger resourceStatus;
 		@XmlElement(name = ShortName.OPERATION_MONITOR)
@@ -288,8 +295,14 @@ public class Notification {
 		 * @return possible object is {@link Object }
 		 * 
 		 */
-		public Object getRepresentation() {
+		public Type getRepresentation() {
 			return representation;
+		}
+
+		@Override
+		public String toString() {
+			return "NotificationEvent [representation=" + representation + ", resourceStatus=" + resourceStatus
+					+ ", operationMonitor=" + operationMonitor + "]";
 		}
 
 		/**
@@ -299,7 +312,7 @@ public class Notification {
 		 *            allowed object is {@link Object }
 		 * 
 		 */
-		public void setRepresentation(Object value) {
+		public void setRepresentation(Type value) {
 			this.representation = value;
 		}
 

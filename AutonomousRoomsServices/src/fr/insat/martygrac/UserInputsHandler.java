@@ -7,6 +7,7 @@ import javax.ws.rs.core.MediaType;
 
 @Path("userinputs")
 public class UserInputsHandler {
+	/*
 	@GET
 	@Path("getMinTemp")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -63,5 +64,5 @@ public class UserInputsHandler {
 		return "12";
 	}
 	
-	
+	*/
 }
