@@ -12,6 +12,7 @@ public class WindowsService {
 	@Path("open")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String open() {
+		System.out.println("Windows opened");
 		return "Windows opened.";
 	}
 	
@@ -19,6 +20,7 @@ public class WindowsService {
 	@Path("close")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String close() {
+		System.out.println("Widowns closed");
 		return "Windows closed.";
 	}
 }

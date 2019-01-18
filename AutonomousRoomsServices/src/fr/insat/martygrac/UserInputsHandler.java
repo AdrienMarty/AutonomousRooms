@@ -7,7 +7,8 @@ import javax.ws.rs.core.MediaType;
 
 @Path("userinputs")
 public class UserInputsHandler {
-	/*
+	
+	
 	@GET
 	@Path("getMinTemp")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -19,20 +20,6 @@ public class UserInputsHandler {
 	@Path("getMaxTemp")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String getMaxTemp() {
-		return "12";
-	}
-	
-	@GET
-	@Path("setMinTemp")
-	@Produces(MediaType.TEXT_PLAIN)
-	public String setMinTemp() {
-		return "32";
-	}
-	
-	@GET
-	@Path("setMaxTemp")
-	@Produces(MediaType.TEXT_PLAIN)
-	public String setMaxTemp() {
 		return "12";
 	}
 	
@@ -49,20 +36,6 @@ public class UserInputsHandler {
 	public String getMaxTime() {
 		return "12";
 	}
+
 	
-	@GET
-	@Path("setMinTime")
-	@Produces(MediaType.TEXT_PLAIN)
-	public String setMinTime() {
-		return "32";
-	}
-	
-	@GET
-	@Path("setMaxTemp")
-	@Produces(MediaType.TEXT_PLAIN)
-	public String setMaxTime() {
-		return "12";
-	}
-	
-	*/
 }

@@ -28,12 +28,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.ws.Response;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
@@ -46,18 +48,24 @@ public class TemperatureService {
 	@Path("getExtTemp")
 	@Consumes(MediaType.APPLICATION_XML)
 	@Produces (MediaType.TEXT_PLAIN)
-	public String getOutdoor(String body) throws ParserConfigurationException, SAXException, IOException {
-		System.out.println(body);
+	public String getOutdoor(String body)  {
+		//System.out.println(body);
 		Pattern p = Pattern.compile("<con>([^<]+)</con>"); 
 		Matcher m = p.matcher(body);
 		while(m.find())
 		{
-			Temp.Temperature_ext = Integer.valueOf(m.group(1));
+			ApplicationState.Temperature_ext = Integer.valueOf(m.group(1));
 		}
 		Client client = ClientBuilder.newClient();
-		WebTarget webTarget = client.target("http://localhost:8080/AutonomousRoomsServices/smart/test");
+		WebTarget webTarget = client.target("http://localhost:8080/AutonomousRoomsServices/smart/newTempHandler");
 		Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_XML);
 		invocationBuilder.get();
+		
+		client = ClientBuilder.newClient();
+		webTarget = client.target("http://mac_maxime:1880/data/Temp_ext");
+		invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
+		javax.ws.rs.core.Response resp = invocationBuilder.post(Entity.entity(String.valueOf(ApplicationState.Temperature_ext), MediaType.TEXT_PLAIN));
+		System.out.println(resp.toString());
 		return "OK";
 	}
 	
@@ -66,17 +74,24 @@ public class TemperatureService {
 	@Consumes(MediaType.APPLICATION_XML)
 	@Produces (MediaType.TEXT_PLAIN)
 	public String getIndoor(String body) {
-		System.out.println(body);
+		//System.out.println(body);
 		Pattern p = Pattern.compile("<con>([^<]+)</con>"); 
 		Matcher m = p.matcher(body);
 		while(m.find())
 		{
-			Temp.Temperature_int = Integer.valueOf(m.group(1));
+			ApplicationState.Temperature_int = Integer.valueOf(m.group(1));
 		}
 		Client client = ClientBuilder.newClient();
-		WebTarget webTarget = client.target("http://localhost:8080/AutonomousRoomsServices/smart/test");
+		WebTarget webTarget = client.target("http://localhost:8080/AutonomousRoomsServices/smart/newTempHandler");
 		Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_XML);
 		invocationBuilder.get();
+		
+		
+		client = ClientBuilder.newClient();
+		webTarget = client.target("http://mac_maxime:1880/data/Temp_int");
+		invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
+		javax.ws.rs.core.Response resp = invocationBuilder.post(Entity.entity(String.valueOf(ApplicationState.Temperature_int), MediaType.TEXT_PLAIN));
+		System.out.println(resp.toString());
 		return "OK";
 	}
 }
