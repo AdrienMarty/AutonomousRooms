@@ -12,7 +12,10 @@ public class ApplicationState {
 	public static boolean isSomeoneHere = false;
 	public static int Max_temperature = 0;
 	public static int StartofTheDay;
-	public static 
+	public static boolean windowsState;
+	public static boolean doorsState;
+	public static boolean lightsState;
+	public static boolean alarmState;
 	
 	@GET
 	@Path("getLastTempExt")
@@ -33,6 +36,13 @@ public class ApplicationState {
 	@Produces(MediaType.TEXT_PLAIN)
 	public static boolean isSomeoneHere() {
 		return isSomeoneHere;
+	}
+	
+	
+	@GET 
+	@Path("/path")
+	public void notifyStateChanged() {
+		
 	}
 	
 	
