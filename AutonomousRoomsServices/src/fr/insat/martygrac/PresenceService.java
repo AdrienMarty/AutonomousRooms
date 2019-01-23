@@ -31,7 +31,7 @@ public class PresenceService {
 			ApplicationState.isSomeoneHere = Boolean.valueOf(m.group(1));
 		}
 		Client client = ClientBuilder.newClient();
-		WebTarget webTarget = client.target("http://localhost:8080/AutonomousRoomsServices/smart/test");
+		WebTarget webTarget = client.target("http://localhost:8080/AutonomousRoomsServices/smart/newPresenceHandler");
 		Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_XML);
 		invocationBuilder.get();
 		

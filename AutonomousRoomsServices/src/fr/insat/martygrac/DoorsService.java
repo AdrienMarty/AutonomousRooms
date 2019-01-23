@@ -12,6 +12,7 @@ public class DoorsService {
 	@Path("open")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String openDoors() {
+		ApplicationState.doorsState = true;
 		return "Doors opened.";
 	}
 	
@@ -19,6 +20,7 @@ public class DoorsService {
 	@Path("close")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String closeDoors() {
+		ApplicationState.doorsState = false;
 		return "Doors closed.";
 	}
 }

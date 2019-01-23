@@ -10,13 +10,14 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import fr.insat.martygrac.Runnables.*;
 import java.lang.Thread;
+import java.util.ArrayList;
 
 @Path("smart")
 public class SmartService {
 	
 	public static SmartGestion smartGestion = new SmartGestion();
 	
-	public static Thread mThread = new Thread(smartGestion);
+	public static Thread timeWatcherThread = new Thread(smartGestion);
 
 	@GET
 	@Path("test")
@@ -34,30 +35,84 @@ public class SmartService {
 		System.out.println("Temp int = "+ApplicationState.Temperature_int);
 		System.out.println("Someone here = "+ApplicationState.isSomeoneHere);
 		//TODO Changment du 22 en un seuil mémorisé
-		if (ApplicationState.Temperature_int > ApplicationState.Temperature_ext && ApplicationState.Temperature_ext > 22) {
-			WebTarget webTarget = client.target("http://localhost:8080/AutonomousRoomsServices/windows/open");
-			Invocation.Builder invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
-			invocationBuilder.get();
-		}else {
-			WebTarget webTarget = client.target("http://localhost:8080/AutonomousRoomsServices/windows/close");
-			Invocation.Builder invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
-			invocationBuilder.get();
+		if(ApplicationState.time >= ApplicationState.start_of_the_day && ApplicationState.time <= ApplicationState.end_of_the_day) {
+			if (ApplicationState.Temperature_int > ApplicationState.Temperature_ext && ApplicationState.Temperature_ext > ApplicationState.temp_threshold ) {
+				if (!ApplicationState.windowsState) {
+					WebTarget webTarget = client.target("http://localhost:8080/AutonomousRoomsServices/windows/open");
+					Invocation.Builder invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
+					invocationBuilder.get();	
+					ArrayList<String> var = new ArrayList<String>(); 
+					var.add(ApplicationState.WINDOWS);
+					ApplicationState.notifyStateChanged(var);
+				}
+			}else {
+				if(ApplicationState.windowsState) {
+					WebTarget webTarget = client.target("http://localhost:8080/AutonomousRoomsServices/windows/close");
+					Invocation.Builder invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
+					invocationBuilder.get();
+					ArrayList<String> var = new ArrayList<String>(); 
+					var.add(ApplicationState.WINDOWS);
+					ApplicationState.notifyStateChanged(var);
+				}
+			}
 		}
 			
 	}
 	
+	@GET
+	@Path("newPresenceHandler")
+	public void onPresenceDetected() {
+		ApplicationState.updateTime();
+		Client client = ClientBuilder.newClient();
+		if(ApplicationState.time >= ApplicationState.start_of_the_day && ApplicationState.time <= ApplicationState.end_of_the_day) {
+			if(!ApplicationState.lightsState && ApplicationState.isSomeoneHere) {
+				WebTarget webTarget = client.target("http://localhost:8080/AutonomousRoomsServices/lights/on");
+				Invocation.Builder invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
+				invocationBuilder.get();	
+				ArrayList<String> var = new ArrayList<String>(); 
+				var.add(ApplicationState.LIGHT);
+				ApplicationState.notifyStateChanged(var);
+			}
+			else if(ApplicationState.lightsState && !ApplicationState.isSomeoneHere) {
+				WebTarget webTarget = client.target("http://localhost:8080/AutonomousRoomsServices/lights/off");
+				Invocation.Builder invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
+				invocationBuilder.get();	
+				ArrayList<String> var = new ArrayList<String>(); 
+				var.add(ApplicationState.LIGHT);
+				ApplicationState.notifyStateChanged(var);
+			}
+		}else {
+			if(!ApplicationState.alarmState && ApplicationState.isSomeoneHere) {
+				WebTarget webTarget = client.target("http://localhost:8080/AutonomousRoomsServices/alarm/trigger");
+				Invocation.Builder invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
+				invocationBuilder.get();	
+				ArrayList<String> var = new ArrayList<String>(); 
+				var.add(ApplicationState.ALARM);
+				ApplicationState.notifyStateChanged(var);
+			}
+			else if(ApplicationState.alarmState && !ApplicationState.isSomeoneHere) {
+				WebTarget webTarget = client.target("http://localhost:8080/AutonomousRoomsServices/alarm/stop");
+				Invocation.Builder invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
+				invocationBuilder.get();	
+				ArrayList<String> var = new ArrayList<String>(); 
+				var.add(ApplicationState.ALARM);
+				ApplicationState.notifyStateChanged(var);
+			}
+		}
+	}
 	
-	/*@GET
+	
+	@GET
 	@Path("start")
 	@Produces(MediaType.TEXT_PLAIN)
 	public int start_thread() {
 		int result;
 		try {
-			if(mThread.isAlive()) {
+			if(timeWatcherThread.isAlive()) {
 				smartGestion.resume();
 			}
 			else{
-				mThread.start();
+				timeWatcherThread.start();
 			}
 			result = 0;
 		}catch (Exception e) {
@@ -80,7 +135,7 @@ public class SmartService {
 			result=-1;
 		}
 		return result;
-	}*/
+	}
 	
 	
 
