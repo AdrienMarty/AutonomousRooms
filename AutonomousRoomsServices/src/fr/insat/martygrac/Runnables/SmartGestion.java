@@ -45,7 +45,8 @@ public class SmartGestion implements Runnable {
             }
 			ApplicationState.updateTime();
 			allClosed = !(ApplicationState.doorsState || ApplicationState.lightsState || ApplicationState.windowsState);
-			if(ApplicationState.time == ApplicationState.end_of_the_day && !allClosed) {
+			if(ApplicationState.time >= ApplicationState.end_of_the_day && !allClosed) {
+				
 				WebTarget webTarget = client.target("http://localhost:8080/AutonomousRoomsServices/doors/close");
 				Invocation.Builder invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
 				invocationBuilder.get();	
@@ -57,16 +58,23 @@ public class SmartGestion implements Runnable {
 				webTarget = client.target("http://localhost:8080/AutonomousRoomsServices/lights/off");
 				invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
 				invocationBuilder.get();
+				ArrayList<String> var = new ArrayList<String>(); 
+				
+				if(ApplicationState.isSomeoneHere) {
+					webTarget = client.target("http://localhost:8080/AutonomousRoomsServices/alarm/trigger");
+					invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
+					invocationBuilder.get();
+					var.add(ApplicationState.ALARM);
+				}
 				
 				allClosed = true;
 				
-				ArrayList<String> var = new ArrayList<String>(); 
 				var.add(ApplicationState.DOORS);
 				var.add(ApplicationState.WINDOWS);
 				var.add(ApplicationState.LIGHT);
 				ApplicationState.notifyStateChanged(var);
 			}
-			else if (ApplicationState.time == ApplicationState.start_of_the_day && !ApplicationState.doorsState) {
+			else if (ApplicationState.time >= ApplicationState.start_of_the_day && ApplicationState.time <= ApplicationState.end_of_the_day && !ApplicationState.doorsState) {
 				WebTarget webTarget = client.target("http://localhost:8080/AutonomousRoomsServices/doors/open");
 				Invocation.Builder invocationBuilder = webTarget.request(MediaType.TEXT_PLAIN);
 				invocationBuilder.get();

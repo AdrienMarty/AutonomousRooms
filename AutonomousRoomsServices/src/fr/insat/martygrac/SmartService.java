@@ -105,19 +105,14 @@ public class SmartService {
 	@GET
 	@Path("start")
 	@Produces(MediaType.TEXT_PLAIN)
-	public int start_thread() {
-		int result;
+	public String start_thread() {
+		String result;
 		try {
-			if(timeWatcherThread.isAlive()) {
-				smartGestion.resume();
-			}
-			else{
-				timeWatcherThread.start();
-			}
-			result = 0;
+			timeWatcherThread.start();
+			result = "Thread Started";
 		}catch (Exception e) {
-			e.printStackTrace();
-			result=-1;
+			//e.printStackTrace();
+			result="Thread already running";
 		}
 		return result;
 	}
