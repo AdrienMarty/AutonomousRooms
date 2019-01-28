@@ -12,6 +12,7 @@ public class AlarmService {
 	@Path("trigger")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String trigger() {
+		ApplicationState.alarmState=true;
 		return "Alarm triggered.";
 	}
 	
@@ -19,6 +20,7 @@ public class AlarmService {
 	@Path("stop")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String stop() {
+		ApplicationState.alarmState=false;
 		return "Alarm stopped.";
 	}
 }

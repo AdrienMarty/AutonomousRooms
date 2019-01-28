@@ -12,6 +12,7 @@ public class WindowsService {
 	@Path("open")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String open() {
+		ApplicationState.windowsState = true;
 		System.out.println("Windows opened");
 		return "Windows opened.";
 	}
@@ -20,6 +21,7 @@ public class WindowsService {
 	@Path("close")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String close() {
+		ApplicationState.windowsState = false;
 		System.out.println("Widowns closed");
 		return "Windows closed.";
 	}

@@ -11,6 +11,7 @@ public class LightsService {
 	@Path("on")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String turnOn() {
+		ApplicationState.lightsState=true;
 		return "Lights on.";
 	}
 	
@@ -18,6 +19,7 @@ public class LightsService {
 	@Path("off")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String turnOff() {
+		ApplicationState.lightsState=false;
 		return "Lights off.";
 	}
 }
